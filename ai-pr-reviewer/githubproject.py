@@ -1,5 +1,10 @@
 import ollama
-file_path = input("Enter code file path: ")
+import sys
+if len(sys.argv) < 2:
+    print("Usage: python reviewer.py <file_path>")
+    exit()
+
+file_path = sys.argv[1]
 with open(file_path, "r", encoding="utf-8") as file:
     code_to_review = file.read()
 SYSTEM_PROMPT = """
@@ -15,7 +20,6 @@ security, and maintainability.
 - Think about the bigger picture: does this PR make the codebase better?
 
 ## WHAT TO ANALYZE
-
 ### [CRITICAL] Must fix before merge
 - Security vulnerabilities (SQL injection, XSS, exposed secrets, auth bypass)
 - Hardcoded passwords, tokens, API keys, or secrets of any kind
@@ -74,7 +78,7 @@ Tests       : [ADEQUATE | NEEDS MORE TESTS | NO TESTS FOUND]
 ------------------------------------------------------------
 [CRITICAL] ISSUES  (must fix before merge)
 ------------------------------------------------------------
-[List each issue or write "None found"]
+[List each issue]
 
   >> [File:Line]
      Code    : code snippet
@@ -84,7 +88,7 @@ Tests       : [ADEQUATE | NEEDS MORE TESTS | NO TESTS FOUND]
 ------------------------------------------------------------
 [MAJOR] ISSUES  (strongly recommended)
 ------------------------------------------------------------
-[List each issue or write "None found"]
+[List each issue]
 
   >> [File:Line]
      Code    : code snippet
@@ -94,7 +98,7 @@ Tests       : [ADEQUATE | NEEDS MORE TESTS | NO TESTS FOUND]
 ------------------------------------------------------------
 [MINOR] ISSUES  (should fix)
 ------------------------------------------------------------
-[List each issue or write "None found"]
+[List each issue]
 
   >> [File:Line]
      Code    : code snippet
@@ -104,7 +108,7 @@ Tests       : [ADEQUATE | NEEDS MORE TESTS | NO TESTS FOUND]
 ------------------------------------------------------------
 [SUGGESTIONS]  (optional improvements)
 ------------------------------------------------------------
-[List suggestions or write "None"]
+[List suggestions]
 
   >> [File:Line]
      Note : explanation
@@ -119,7 +123,9 @@ REVIEWER NOTES
 ------------------------------------------------------------
 [Broader architectural concerns, patterns noticed, or context
  the author should know. Keep to 3-5 lines max.]
-
+============================================================
+END OF REVIEW
+============================================================
 ============================================================
 END OF REVIEW
 ============================================================
