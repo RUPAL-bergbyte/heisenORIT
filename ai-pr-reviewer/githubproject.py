@@ -832,12 +832,24 @@ for file_path in files:
     with open(file_path, "r", encoding="utf-8") as file:
         code_to_review = file.read()
 
+    agents = {
+    "security": SECURITY_PROMPT,
+    "quality": QUALITY_PROMPT,
+    "performance": PERFORMANCE_PROMPT
+}
+
+combined_review = ""
+
+for agent_name, prompt in agents.items():
+
+    print(f"\nRunning {agent_name} agent...")
+
     response = ollama.chat(
         model='qwen2.5-coder:3b',
         messages=[
             {
                 'role': 'system',
-                'content': SYSTEM_PROMPT
+                'content': prompt
             },
             {
                 'role': 'user',
@@ -845,6 +857,16 @@ for file_path in files:
             }
         ]
     )
+
+    review = response['message']['content']
+
+    combined_review += (
+        f"\n\n========== "
+        f"{agent_name.upper()} "
+        f"==========\n\n"
+    )
+
+    combined_review += review
 
     review = response['message']['content']
 
@@ -861,7 +883,7 @@ for file_path in files:
     )
 
     with open(output_file, "w", encoding="utf-8") as f:
-        f.write(review)
+        f.write(combined_review)
 
     print(f"\nSaved review → {output_file}")
     # ---------- COMBINE REVIEWS ----------

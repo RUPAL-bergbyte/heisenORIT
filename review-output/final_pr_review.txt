@@ -1,5 +1,9 @@
 
 
+===== final_pr_review.txt =====
+
+
+
 ===== test1_review.txt =====
 
 ============================================================
@@ -237,3 +241,451 @@ This function seems to be part of a larger application that deals with user data
 END OF REVIEW
 
 ============================================================
+
+===== test1_review.txt =====
+
+============================================================
+
+PULL REQUEST REVIEW
+
+============================================================
+
+
+
+SUMMARY
+
+-------
+
+This PR introduces several functionalities related to user management, database operations, and file processing. It includes security concerns such as hardcoded secrets, poor error handling, and a potential vulnerability in executing custom code.
+
+VERDICT
+
+-------
+
+Decision    : REQUEST CHANGES
+Risk Level  : HIGH
+Tests       : NEEDS MORE TESTS
+
+
+
+------------------------------------------------------------
+
+[CRITICAL] ISSUES  (must fix before merge)
+
+------------------------------------------------------------
+
+  >> [users.py:16]
+
+     Code    : API_KEY = "SECRET_API_KEY_123456"
+              ADMIN_PASSWORD = "admin123"
+
+     Problem : Hardcoded secrets
+     Fix     : Use environment variables or a secret management service to store sensitive information.
+
+  >> [users.py:40]
+
+     Code    : cursor.execute(query).fetchone()
+
+     Problem : Password compared as plaintext
+     Fix     : Hash passwords before storing and compare hashes during login.
+
+  >> [users.py:136]
+
+     Code    : os.system("cp users.db " + path)
+
+     Problem : Path traversal vulnerabilities
+     Fix     : Use a library like `shutil` to handle file operations safely without allowing path traversal.
+
+  >> [users.py:148]
+
+     Code    : eval(code)
+
+     Problem : Potential security vulnerability (eval)
+     Fix     : Avoid using `eval()` and replace it with safer alternatives such as `ast.literal_eval()`, `exec()` with restricted context, or a parser for specific use cases.
+
+------------------------------------------------------------
+
+[MAJOR] ISSUES  (strongly recommended)
+
+------------------------------------------------------------
+
+  >> [users.py:80]
+
+     Code    : os.system("cp users.db " + path)
+
+     Problem : Blocking I/O operation
+     Fix     : Use `shutil.copy()` instead of `os.system()` to avoid blocking the main thread.
+
+  >> [users.py:156]
+
+     Code    : while True:
+              print("Syncing...")
+
+     Problem : Infinite loop without termination condition
+     Fix     : Add a termination condition, such as logging a message after successful sync or setting a timeout.
+
+------------------------------------------------------------
+
+[MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+  >> [users.py:39]
+
+     Code    : cursor.execute(query).fetchone()
+
+     Problem : Inconsistent error handling
+     Fix     : Handle cases where `result` is None separately to avoid potential runtime errors.
+
+  >> [users.py:128]
+
+     Code    : temp = []
+
+     Problem : Variable naming
+     Fix     : Use more descriptive variable names, e.g., `user_data`.
+
+  >> [users.py:154]
+
+     Code    : while True:
+              print("Syncing...")
+
+     Problem : Inconsistent indentation
+     Fix     : Ensure consistent indentation for better readability.
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
+
+------------------------------------------------------------
+
+  >> [users.py:90]
+
+     Note : Consider using a logger instead of printing messages directly.
+       - Example: `logging.info("Syncing...")`
+
+  >> [users.py:126]
+
+     Note : Use type hints for function parameters and return types to improve code readability.
+
+------------------------------------------------------------
+
+WHAT'S DONE WELL
+
+------------------------------------------------------------
+
+- The PR introduces new features related to user management, database operations, and file processing.
+- It initializes the database and creates a global cache for users.
+
+REVIEWER NOTES
+
+------------------------------------------------------------
+
+The author should consider implementing proper logging and validation for input data. Additionally, ensure that all security vulnerabilities are addressed before merging the PR.
+
+===== test2_review.txt =====
+
+
+
+========== SECURITY ==========
+
+============================================================
+
+PULL REQUEST REVIEW
+
+============================================================
+
+
+
+SUMMARY
+
+-------
+
+This PR introduces a simple calculator function and user data processing. It includes basic input handling, calculation of average age, and conditional output based on the average.
+
+VERDICT
+
+-------
+
+Decision    : APPROVE
+
+Risk Level  : LOW
+
+Tests       : ADEQUATE
+
+------------------------------------------------------------
+
+[CRITICAL] ISSUES  (must fix before merge)
+
+------------------------------------------------------------
+
+None found.
+
+
+
+------------------------------------------------------------
+
+[MAJOR] ISSUES  (strongly recommended)
+
+------------------------------------------------------------
+
+None found.
+
+------------------------------------------------------------
+
+[MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+None found.
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
+
+------------------------------------------------------------
+
+- Consider using a dictionary to store user data instead of a list, which might be more appropriate if you intend to add more fields like email in the future.
+  
+  >> [process.py:23]
+
+     Note : You can use a dictionary `{name: age}` instead of a list `{"name": name, "age": age}`.
+
+------------------------------------------------------------
+
+WHAT'S DONE WELL
+
+------------------------------------------------------------
+
+- The code is well-structured and easy to understand. The logic for calculating the average age and printing the appropriate message is straightforward.
+- The input handling is simple and effective.
+
+------------------------------------------------------------
+
+REVIEWER NOTES
+
+------------------------------------------------------------
+
+None.
+
+============================================================
+
+END OF REVIEW
+
+============================================================
+
+========== QUALITY ==========
+
+============================================================
+
+PULL REQUEST REVIEW
+
+============================================================
+
+
+
+SUMMARY
+
+-------
+
+This PR introduces a simple command-line tool that collects user data, calculates the average age of the users, and prints whether they are "old" or "young". The code is written in Python and includes basic input validation and error handling.
+
+VERDICT
+
+-------
+
+Decision    : APPROVE
+
+Risk Level  : LOW
+
+Tests       : ADEQUATE
+
+
+
+------------------------------------------------------------
+
+[CRITICAL] ISSUES  (must fix before merge)
+
+------------------------------------------------------------
+
+None.
+
+
+
+------------------------------------------------------------
+
+[MAJOR] ISSUES  (strongly recommended)
+
+------------------------------------------------------------
+
+None.
+
+
+
+------------------------------------------------------------
+
+[MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+None.
+
+
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
+
+------------------------------------------------------------
+
+- The use of `math.pi` in the `process()` function can be replaced with a constant or variable that holds the value of π. This would make the code more readable and maintainable.
+
+  >> process.py:18
+     unused = math.pi
+
+
+
+------------------------------------------------------------
+
+WHAT'S DONE WELL
+
+------------------------------------------------------------
+
+- The code is well-organized and follows standard Python practices.
+- It handles basic input validation, such as ensuring that user inputs are integers for age.
+- The error handling is straightforward and clear.
+
+------------------------------------------------------------
+
+REVIEWER NOTES
+
+------------------------------------------------------------
+
+None.
+
+
+
+============================================================
+
+END OF REVIEW
+
+============================================================
+
+========== PERFORMANCE ==========
+
+============================================================
+
+PULL REQUEST REVIEW
+
+============================================================
+
+
+
+SUMMARY
+
+-------
+
+This PR introduces a simple program to calculate basic arithmetic operations and determine if the average age of users is old or young. It also collects user data and calculates the total and average age.
+
+VERDICT
+
+-------
+
+Decision    : APPROVE
+
+Risk Level  : LOW
+
+Tests       : NO TESTS FOUND
+
+
+
+------------------------------------------------------------
+
+[CRITICAL] ISSUES  (must fix before merge)
+
+------------------------------------------------------------
+
+None identified.
+
+
+
+------------------------------------------------------------
+
+[MAJOR] ISSUES  (strongly recommended)
+
+------------------------------------------------------------
+
+None identified.
+
+
+
+------------------------------------------------------------
+
+[MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+- Code duplication in `getUserData` function.
+
+  >> users = []
+  for i in range(0,5):
+    name=input("Enter name")
+    age=input("Enter age")
+    users.append({"name":name,"age":age})
+  return users
+
+  Can be refactored to:
+
+  ```python
+def getUserData():
+    users = [{"name": input("Enter name"), "age": input("Enter age")} for _ in range(5)]
+    return users
+  ```
+
+- Overly complex logic in `process` function.
+
+  >> total = 0
+  for i in range(len(data)):
+    total += int(data[i]["age"])
+  avg = total/len(data)
+
+  Can be simplified using list comprehension and built-in functions:
+
+  ```python
+def process():
+    data = getUserData()
+    avg = sum(int(user["age"]) for user in data) / len(data)
+    print("old users" if avg > 50 else "young users")
+  ```
+
+- Misleading variable name `total`.
+
+  >> total += int(data[i]["age"])
+
+  Can be renamed to `sum_of_ages` or `total_age_sum` for better readability.
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
+
+------------------------------------------------------------
+
+None identified.
+
+
+
+------------------------------------------------------------
+
+WHAT'S DONE WELL
+
+------------------------------------------------------------
+
+- Simple and clear code logic.
+- Good use of functions (`getUserData`, `process`) to break down the program into manageable parts.
+
+------------------------------------------------------------
+
+REVIEWER NOTES
+
+------------------------------------------------------------
+
+The code is generally clean and efficient, but there are suggestions for refactoring and improving readability.
