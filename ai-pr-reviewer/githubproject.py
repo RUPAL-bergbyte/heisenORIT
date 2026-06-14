@@ -338,3 +338,45 @@ for file_path in files:
         f.write(review)
 
     print(f"\nSaved review → {output_file}")
+    # ---------- COMBINE REVIEWS ----------
+
+combined_review = ""
+
+for filename in os.listdir(output_folder):
+
+    if filename.endswith("_review.txt"):
+
+        full_path = os.path.join(
+            output_folder,
+            filename
+        )
+
+        with open(
+            full_path,
+            "r",
+            encoding="utf-8"
+        ) as f:
+
+            combined_review += (
+                f"\n\n===== {filename} =====\n\n"
+            )
+
+            combined_review += f.read()
+
+
+final_report = os.path.join(
+    output_folder,
+    "final_pr_review.txt"
+)
+
+with open(
+    final_report,
+    "w",
+    encoding="utf-8"
+) as f:
+
+    f.write(combined_review)
+
+print(
+    f"\nFinal PR Review saved → {final_report}"
+)

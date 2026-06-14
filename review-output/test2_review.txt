@@ -10,17 +10,19 @@ SUMMARY
 
 -------
 
-This PR introduces a simple calculator function and a user data collection process. The code handles basic arithmetic operations and calculates the average age of users.
+This pull request introduces a simple calculator function and a user data collection process. The code is straightforward but lacks proper error handling, input validation, and security considerations.
 
 VERDICT
 
 -------
 
-Decision    : APPROVE
+Decision    : REQUEST CHANGES
 
-Risk Level  : LOW
+Risk Level  : MEDIUM
 
-Tests       : ADEQUATE
+Tests       : NO TESTS FOUND
+
+
 
 ------------------------------------------------------------
 
@@ -28,9 +30,13 @@ Tests       : ADEQUATE
 
 ------------------------------------------------------------
 
-No critical issues found.
+  >> [user.py:10]
 
+     Code    : return "wrong"
 
+     Problem : Returning a hardcoded string without any error handling.
+             This could lead to unexpected behavior or security issues if the input is not validated.
+             Fix: Implement proper error handling by returning an informative message or raising an exception.
 
 ------------------------------------------------------------
 
@@ -38,9 +44,12 @@ No critical issues found.
 
 ------------------------------------------------------------
 
-No major issues found.
+  >> [user.py:29]
 
+     Code    : unused = math.pi
 
+     Problem : Unused variable 'unused' that could be removed to improve code cleanliness.
+             Fix: Remove the declaration of 'unused'.
 
 ------------------------------------------------------------
 
@@ -48,27 +57,16 @@ No major issues found.
 
 ------------------------------------------------------------
 
-Minor issues:
+  >> [user.py:5]
 
-  >> [app.py:26]
-
-     Code    : unused = math.pi
-
-     Problem : Unused variable can be removed
-
-     Fix     : Remove `unused = math.pi`
+     Code    : users = []
+     Fix     : Initialize 'users' as a list to avoid any potential issues.
 
 ------------------------------------------------------------
 
 [SUGGESTIONS]  (optional improvements)
 
 ------------------------------------------------------------
-
-Suggestion:
-
-  >> [app.py:27]
-
-     Note : Consider using a more descriptive name for the list, e.g., `users_data`
 
 
 
@@ -78,13 +76,7 @@ WHAT'S DONE WELL
 
 ------------------------------------------------------------
 
-- Good code structure and separation of concerns. The calculator function is decoupled from user data collection.
-
-- Basic input validation is included to handle non-integer inputs.
-
-- The process can be easily extended to include more operations or additional user data fields.
-
-- Clear naming conventions are used throughout the codebase.
+- The code is structured clearly and follows a logical flow for collecting user data and processing it.
 
 
 
@@ -94,4 +86,10 @@ REVIEWER NOTES
 
 ------------------------------------------------------------
 
-None.
+This function seems to be part of a larger application that deals with user data. It would be good to ensure that all inputs are validated and sanitized before processing, especially if this function is exposed to external users or APIs. Additionally, the code could benefit from more comprehensive testing to cover all possible edge cases.
+
+============================================================
+
+END OF REVIEW
+
+============================================================

@@ -1,3 +1,7 @@
+
+
+===== test1_review.txt =====
+
 ============================================================
 
 PULL REQUEST REVIEW
@@ -135,3 +139,101 @@ REVIEWER NOTES
 ------------------------------------------------------------
 
 The author should consider implementing proper logging and validation for input data. Additionally, ensure that all security vulnerabilities are addressed before merging the PR.
+
+===== test2_review.txt =====
+
+============================================================
+
+PULL REQUEST REVIEW
+
+============================================================
+
+
+
+SUMMARY
+
+-------
+
+This pull request introduces a simple calculator function and a user data collection process. The code is straightforward but lacks proper error handling, input validation, and security considerations.
+
+VERDICT
+
+-------
+
+Decision    : REQUEST CHANGES
+
+Risk Level  : MEDIUM
+
+Tests       : NO TESTS FOUND
+
+
+
+------------------------------------------------------------
+
+[CRITICAL] ISSUES  (must fix before merge)
+
+------------------------------------------------------------
+
+  >> [user.py:10]
+
+     Code    : return "wrong"
+
+     Problem : Returning a hardcoded string without any error handling.
+             This could lead to unexpected behavior or security issues if the input is not validated.
+             Fix: Implement proper error handling by returning an informative message or raising an exception.
+
+------------------------------------------------------------
+
+[MAJOR] ISSUES  (strongly recommended)
+
+------------------------------------------------------------
+
+  >> [user.py:29]
+
+     Code    : unused = math.pi
+
+     Problem : Unused variable 'unused' that could be removed to improve code cleanliness.
+             Fix: Remove the declaration of 'unused'.
+
+------------------------------------------------------------
+
+[MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+  >> [user.py:5]
+
+     Code    : users = []
+     Fix     : Initialize 'users' as a list to avoid any potential issues.
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
+
+------------------------------------------------------------
+
+
+
+------------------------------------------------------------
+
+WHAT'S DONE WELL
+
+------------------------------------------------------------
+
+- The code is structured clearly and follows a logical flow for collecting user data and processing it.
+
+
+
+------------------------------------------------------------
+
+REVIEWER NOTES
+
+------------------------------------------------------------
+
+This function seems to be part of a larger application that deals with user data. It would be good to ensure that all inputs are validated and sanitized before processing, especially if this function is exposed to external users or APIs. Additionally, the code could benefit from more comprehensive testing to cover all possible edge cases.
+
+============================================================
+
+END OF REVIEW
+
+============================================================
