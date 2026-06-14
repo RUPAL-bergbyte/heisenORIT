@@ -14,7 +14,7 @@ SUMMARY
 
 -------
 
-This PR introduces a simple calculator function and user data processing. It includes basic input handling, calculation of average age, and conditional output based on the average.
+This pull request introduces a simple calculator function to add, subtract, multiply, and divide two numbers. It also includes a user data collection function that prompts the user for five names and ages, calculates their average age, and prints whether they are old or young based on the average.
 
 VERDICT
 
@@ -26,13 +26,15 @@ Risk Level  : LOW
 
 Tests       : ADEQUATE
 
+
+
 ------------------------------------------------------------
 
 [CRITICAL] ISSUES  (must fix before merge)
 
 ------------------------------------------------------------
 
-None found.
+None.
 
 
 
@@ -42,7 +44,9 @@ None found.
 
 ------------------------------------------------------------
 
-None found.
+None.
+
+
 
 ------------------------------------------------------------
 
@@ -50,7 +54,15 @@ None found.
 
 ------------------------------------------------------------
 
-None found.
+- Line 25: Unused import statement (`unused = math.pi`). This can be removed to improve code quality.
+
+    >> calc.py:25
+
+        Code    : unused = math.pi
+
+        Problem : Unused import statement
+
+        Fix     : Remove the line `unused = math.pi`
 
 ------------------------------------------------------------
 
@@ -58,11 +70,9 @@ None found.
 
 ------------------------------------------------------------
 
-- Consider using a dictionary to store user data instead of a list, which might be more appropriate if you intend to add more fields like email in the future.
-  
-  >> [process.py:23]
+None.
 
-     Note : You can use a dictionary `{name: age}` instead of a list `{"name": name, "age": age}`.
+
 
 ------------------------------------------------------------
 
@@ -70,8 +80,8 @@ WHAT'S DONE WELL
 
 ------------------------------------------------------------
 
-- The code is well-structured and easy to understand. The logic for calculating the average age and printing the appropriate message is straightforward.
-- The input handling is simple and effective.
+- The code is well-documented with docstrings and comments.
+- The function `getUserData` collects user input and stores it in a list of dictionaries.
 
 ------------------------------------------------------------
 
@@ -79,7 +89,7 @@ REVIEWER NOTES
 
 ------------------------------------------------------------
 
-None.
+No broader architectural concerns or patterns are noticed. The reviewer assumes that the intention was to create a simple calculator and data collection tool, and that these functions are appropriate for their intended use cases.
 
 ============================================================
 
@@ -101,7 +111,90 @@ SUMMARY
 
 -------
 
-This PR introduces a simple command-line tool that collects user data, calculates the average age of the users, and prints whether they are "old" or "young". The code is written in Python and includes basic input validation and error handling.
+This PR introduces a simple calculator function `calc` and a user data processing function `process`. It reads user input for names and ages, calculates the average age, and prints users categorized as "old" or "young". The code includes basic error handling for invalid operations.
+
+VERDICT
+
+-------
+
+Decision    : APPROVE
+
+Risk Level  : LOW
+
+Tests       : NO TESTS FOUND
+
+
+
+------------------------------------------------------------
+
+[CRITICAL] ISSUES  (must fix before merge)
+
+------------------------------------------------------------
+
+There are no critical issues in this PR.
+
+
+
+------------------------------------------------------------
+
+[MAJOR] ISSUES  (strongly recommended)
+
+------------------------------------------------------------
+
+- Missing input validation for user ages.
+- Inadequate test coverage for the `process` function.
+
+------------------------------------------------------------
+
+[MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+None identified in this PR.
+
+
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
+
+------------------------------------------------------------
+
+None identified in this PR.
+
+
+
+------------------------------------------------------------
+
+WHAT'S DONE WELL
+
+------------------------------------------------------------
+
+The code is simple, readable, and follows good practices. The `calc` function handles basic arithmetic operations and the `process` function calculates user averages effectively.
+
+------------------------------------------------------------
+
+REVIEWER NOTES
+
+------------------------------------------------------------
+
+None applicable.
+
+========== PERFORMANCE ==========
+
+============================================================
+
+PULL REQUEST REVIEW
+
+============================================================
+
+
+
+SUMMARY
+
+-------
+
+This PR introduces a simple calculator function `calc` and processes user data to calculate the average age of users. The code handles different operations for addition, subtraction, multiplication, and division.
 
 VERDICT
 
@@ -133,11 +226,17 @@ None.
 
 None.
 
-
-
 ------------------------------------------------------------
 
 [MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+None.
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
 
 ------------------------------------------------------------
 
@@ -147,26 +246,12 @@ None.
 
 ------------------------------------------------------------
 
-[SUGGESTIONS]  (optional improvements)
-
-------------------------------------------------------------
-
-- The use of `math.pi` in the `process()` function can be replaced with a constant or variable that holds the value of π. This would make the code more readable and maintainable.
-
-  >> process.py:18
-     unused = math.pi
-
-
-
-------------------------------------------------------------
-
 WHAT'S DONE WELL
 
 ------------------------------------------------------------
 
-- The code is well-organized and follows standard Python practices.
-- It handles basic input validation, such as ensuring that user inputs are integers for age.
-- The error handling is straightforward and clear.
+- The code is straightforward and easy to understand.
+- The function `calc` handles basic arithmetic operations correctly.
 
 ------------------------------------------------------------
 
@@ -175,131 +260,3 @@ REVIEWER NOTES
 ------------------------------------------------------------
 
 None.
-
-
-
-============================================================
-
-END OF REVIEW
-
-============================================================
-
-========== PERFORMANCE ==========
-
-============================================================
-
-PULL REQUEST REVIEW
-
-============================================================
-
-
-
-SUMMARY
-
--------
-
-This PR introduces a simple program to calculate basic arithmetic operations and determine if the average age of users is old or young. It also collects user data and calculates the total and average age.
-
-VERDICT
-
--------
-
-Decision    : APPROVE
-
-Risk Level  : LOW
-
-Tests       : NO TESTS FOUND
-
-
-
-------------------------------------------------------------
-
-[CRITICAL] ISSUES  (must fix before merge)
-
-------------------------------------------------------------
-
-None identified.
-
-
-
-------------------------------------------------------------
-
-[MAJOR] ISSUES  (strongly recommended)
-
-------------------------------------------------------------
-
-None identified.
-
-
-
-------------------------------------------------------------
-
-[MINOR] ISSUES  (should fix)
-
-------------------------------------------------------------
-
-- Code duplication in `getUserData` function.
-
-  >> users = []
-  for i in range(0,5):
-    name=input("Enter name")
-    age=input("Enter age")
-    users.append({"name":name,"age":age})
-  return users
-
-  Can be refactored to:
-
-  ```python
-def getUserData():
-    users = [{"name": input("Enter name"), "age": input("Enter age")} for _ in range(5)]
-    return users
-  ```
-
-- Overly complex logic in `process` function.
-
-  >> total = 0
-  for i in range(len(data)):
-    total += int(data[i]["age"])
-  avg = total/len(data)
-
-  Can be simplified using list comprehension and built-in functions:
-
-  ```python
-def process():
-    data = getUserData()
-    avg = sum(int(user["age"]) for user in data) / len(data)
-    print("old users" if avg > 50 else "young users")
-  ```
-
-- Misleading variable name `total`.
-
-  >> total += int(data[i]["age"])
-
-  Can be renamed to `sum_of_ages` or `total_age_sum` for better readability.
-
-------------------------------------------------------------
-
-[SUGGESTIONS]  (optional improvements)
-
-------------------------------------------------------------
-
-None identified.
-
-
-
-------------------------------------------------------------
-
-WHAT'S DONE WELL
-
-------------------------------------------------------------
-
-- Simple and clear code logic.
-- Good use of functions (`getUserData`, `process`) to break down the program into manageable parts.
-
-------------------------------------------------------------
-
-REVIEWER NOTES
-
-------------------------------------------------------------
-
-The code is generally clean and efficient, but there are suggestions for refactoring and improving readability.

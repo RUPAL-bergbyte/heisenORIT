@@ -825,53 +825,53 @@ if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
 # ---------- REVIEW ----------
+agents = {
+    "security": SECURITY_PROMPT,
+    "quality": QUALITY_PROMPT,
+    "performance": PERFORMANCE_PROMPT
+}
+
 for file_path in files:
+
+    combined_review = ""
 
     print(f"\nReviewing: {file_path}")
 
     with open(file_path, "r", encoding="utf-8") as file:
         code_to_review = file.read()
 
-    agents = {
-    "security": SECURITY_PROMPT,
-    "quality": QUALITY_PROMPT,
-    "performance": PERFORMANCE_PROMPT
-}
+    for agent_name, prompt in agents.items():
 
-combined_review = ""
+        print(f"\nRunning {agent_name} agent...")
 
-for agent_name, prompt in agents.items():
-
-    print(f"\nRunning {agent_name} agent...")
-
-    response = ollama.chat(
-        model='qwen2.5-coder:3b',
-        messages=[
-            {
-                'role': 'system',
+        response = ollama.chat(
+            model='qwen2.5-coder:3b',
+            messages=[
+                {
+                    'role': 'system',
                 'content': prompt
-            },
-            {
-                'role': 'user',
-                'content': code_to_review
-            }
-        ]
-    )
+                },
+                {
+                    'role': 'user',
+                    'content': code_to_review
+                }
+            ]
+        )
 
-    review = response['message']['content']
+        review = response['message']['content']
 
-    combined_review += (
-        f"\n\n========== "
-        f"{agent_name.upper()} "
-        f"==========\n\n"
-    )
+        combined_review += (
+            f"\n\n========== "
+            f"{agent_name.upper()} "
+            f"==========\n\n"
+        )
 
-    combined_review += review
+        combined_review += review
 
-    review = response['message']['content']
 
     print("\n========== AI CODE REVIEW ==========\n")
-    print(review)
+    print(combined_review)
+
 
     base_name = os.path.splitext(
         os.path.basename(file_path)
@@ -882,7 +882,12 @@ for agent_name, prompt in agents.items():
         f"{base_name}_review.txt"
     )
 
-    with open(output_file, "w", encoding="utf-8") as f:
+    with open(
+        output_file,
+        "w",
+        encoding="utf-8"
+    ) as f:
+
         f.write(combined_review)
 
     print(f"\nSaved review → {output_file}")
