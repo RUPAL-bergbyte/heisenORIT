@@ -1,0 +1,97 @@
+============================================================
+
+PULL REQUEST REVIEW
+
+============================================================
+
+
+
+SUMMARY
+
+-------
+
+This PR introduces a simple calculator function and a user data collection process. The code handles basic arithmetic operations and calculates the average age of users.
+
+VERDICT
+
+-------
+
+Decision    : APPROVE
+
+Risk Level  : LOW
+
+Tests       : ADEQUATE
+
+------------------------------------------------------------
+
+[CRITICAL] ISSUES  (must fix before merge)
+
+------------------------------------------------------------
+
+No critical issues found.
+
+
+
+------------------------------------------------------------
+
+[MAJOR] ISSUES  (strongly recommended)
+
+------------------------------------------------------------
+
+No major issues found.
+
+
+
+------------------------------------------------------------
+
+[MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+Minor issues:
+
+  >> [app.py:26]
+
+     Code    : unused = math.pi
+
+     Problem : Unused variable can be removed
+
+     Fix     : Remove `unused = math.pi`
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
+
+------------------------------------------------------------
+
+Suggestion:
+
+  >> [app.py:27]
+
+     Note : Consider using a more descriptive name for the list, e.g., `users_data`
+
+
+
+------------------------------------------------------------
+
+WHAT'S DONE WELL
+
+------------------------------------------------------------
+
+- Good code structure and separation of concerns. The calculator function is decoupled from user data collection.
+
+- Basic input validation is included to handle non-integer inputs.
+
+- The process can be easily extended to include more operations or additional user data fields.
+
+- Clear naming conventions are used throughout the codebase.
+
+
+
+------------------------------------------------------------
+
+REVIEWER NOTES
+
+------------------------------------------------------------
+
+None.

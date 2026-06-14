@@ -293,7 +293,10 @@ END OF REVIEW
 
 - Keep tone professional, never condescending
 """
+output_folder = "review-output"
 
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
 
 # ---------- REVIEW ----------
 for file_path in files:
@@ -317,5 +320,21 @@ for file_path in files:
         ]
     )
 
+    review = response['message']['content']
+
     print("\n========== AI CODE REVIEW ==========\n")
-    print(response['message']['content'])
+    print(review)
+
+    base_name = os.path.splitext(
+        os.path.basename(file_path)
+    )[0]
+
+    output_file = os.path.join(
+        output_folder,
+        f"{base_name}_review.txt"
+    )
+
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(review)
+
+    print(f"\nSaved review → {output_file}")

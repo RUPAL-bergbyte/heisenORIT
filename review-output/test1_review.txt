@@ -1,0 +1,230 @@
+============================================================
+
+PULL REQUEST REVIEW
+
+============================================================
+
+
+
+SUMMARY
+
+-------
+
+This PR introduces a SQLite database for user management, including functions for creating users, logging in, deleting users, executing custom code, backing up the database, and searching users. The code also includes a background thread to update the global cache of usernames and passwords.
+
+VERDICT
+
+-------
+
+Decision: REQUEST CHANGES
+
+Risk Level: HIGH
+
+Tests: NO TESTS FOUND
+
+
+
+------------------------------------------------------------
+
+[CRITICAL] ISSUES  (must fix before merge)
+
+------------------------------------------------------------
+
+  >> [app.py:14]
+
+     Code    : API_KEY = "SECRET_API_KEY_123456"
+               ADMIN_PASSWORD = "admin123"
+
+     Problem : Hardcoded credentials and secrets of any kind
+               - API_KEY
+               - ADMIN_PASSWORD
+
+     Fix     : Replace hardcoded secrets with environment variables or a secure vault.
+
+  >> [app.py:21]
+
+     Code    : cursor.execute("CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, username TEXT, password TEXT)")
+
+     Problem : SQL built with string concatenation (injection risk)
+               - Using f-string for SQL queries
+
+     Fix     : Use parameterized queries to prevent SQL injection.
+
+  >> [app.py:40]
+
+     Code    : create_user(username, password):
+                 query = f"INSERT INTO users(username,password) VALUES('{username}','{password}')"
+
+     Problem : Password compared as plaintext (no hashing)
+               - Using plain text for password comparison
+
+     Fix     : Hash passwords before storing them in the database.
+
+  >> [app.py:47]
+
+     Code    : if result:
+                 if result[2] == password:
+                     print("Login successful")
+                     return True
+
+         return False
+
+     Problem : Broken error handling that could crash production
+               - Missing error handling for login
+
+     Fix     : Add try-except blocks to handle exceptions.
+
+  >> [app.py:81]
+
+     Code    : os.system("cp users.db " + path)
+
+     Problem : Path traversal vulnerabilities
+               - Using raw string input with os.system()
+
+     Fix     : Use subprocess module and sanitize user inputs.
+
+  >> [app.py:90]
+
+     Code    : if "ERROR" in data:
+         raise Exception("Invalid file")
+
+     Problem : Plaintext password comparison (no hashing)
+               - Using plain text for password comparison
+
+     Fix     : Hash passwords before comparing them.
+
+  >> [app.py:112]
+
+     Code    : def execute_custom_code(code):
+         return eval(code)
+
+     Problem : Broken error handling that could crash production
+               - No exception handling
+
+     Fix     : Add try-except blocks to handle exceptions.
+
+  >> [app.py:143]
+
+     Code    : if *name* == "*main*":
+         main()
+
+     Problem : Hardcoded credentials and secrets of any kind
+               - Using hardcoded string for module name check
+
+     Fix     : Replace hardcoded string with a more secure mechanism.
+
+------------------------------------------------------------
+
+[MAJOR] ISSUES  (strongly recommended)
+
+------------------------------------------------------------
+
+  >> [app.py:29]
+
+     Code    : db = sqlite3.connect("users.db", check_same_thread=False)
+               cursor = db.cursor()
+
+     Problem : Performance bottlenecks
+               - Using global variable for database connection
+
+     Fix     : Pass the database connection and cursor as arguments to functions.
+
+  >> [app.py:64]
+
+     Code    : def update_cache():
+         global global_cache
+
+
+         while True:
+             users = cursor.execute("SELECT * FROM users").fetchall()
+
+             for u in users:
+                 global_cache[u[1]] = u[2]
+
+             time.sleep(1)
+
+     Problem : Performance bottlenecks
+               - Using global variable for cache
+
+     Fix     : Pass the cache as an argument to functions.
+
+  >> [app.py:83]
+
+     Code    : os.system("cp users.db " + path)
+
+     Problem : Path traversal vulnerabilities
+               - Using raw string input with os.system()
+
+     Fix     : Use subprocess module and sanitize user inputs.
+
+------------------------------------------------------------
+
+[MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+  >> [app.py:42]
+
+     Code    : cursor.execute("INSERT INTO users(username,password) VALUES('{username}','{password}')")
+
+     Problem : Overly complex logic that can be simplified
+               - Using f-string for SQL queries
+
+     Fix     : Use parameterized queries to prevent SQL injection.
+
+  >> [app.py:57]
+
+     Code    : if result:
+                 if result[2] == password:
+                     print("Login successful")
+                     return True
+
+         return False
+
+     Problem : Misleading variable/function names
+               - Using "result" as a variable name
+
+     Fix     : Rename variables for clarity.
+
+  >> [app.py:74]
+
+     Code    : backup_database(path):
+         os.system("cp users.db " + path)
+
+     Problem : Misleading variable/function names
+               - Using "path" as a variable name
+
+     Fix     : Rename variables for clarity.
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
+
+------------------------------------------------------------
+
+  >> [app.py:10]
+
+     Note : Consider using a logging library instead of print statements.
+
+  >> [app.py:64]
+
+     Note : Consider adding a logger to update_cache function.
+
+------------------------------------------------------------
+
+WHAT'S DONE WELL
+
+------------------------------------------------------------
+
+- The code introduces a SQLite database for user management.
+- The author has started implementing a background thread to update the global cache.
+
+REVIEWER NOTES
+
+------------------------------------------------------------
+
+The PR introduces important security vulnerabilities and performance issues. The use of hardcoded credentials, SQL injection, and insecure password handling need to be addressed to ensure the application is secure and reliable. Additionally, the code can be improved for readability and maintainability by using parameterized queries, logging, and more structured naming conventions.
+
+END OF REVIEW
+
+============================================================
