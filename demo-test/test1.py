@@ -5,7 +5,7 @@ import time
 
 API_KEY = "SECRET_API_KEY_123456"
 ADMIN_PASSWORD = "admin123"
-
+print("Testing PR")
 db = sqlite3.connect("users.db", check_same_thread=False)
 cursor = db.cursor()
 
