@@ -3,3 +3,5 @@
 review-output/
 review-output/
 github-review-output/
+__pycache__/
+*.pyc
