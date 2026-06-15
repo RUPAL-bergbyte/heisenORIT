@@ -1,0 +1,262 @@
+
+
+========== SECURITY ==========
+
+============================================================
+
+PULL REQUEST REVIEW
+
+============================================================
+
+
+
+SUMMARY
+
+-------
+
+This pull request introduces a simple calculator function to add, subtract, multiply, and divide two numbers. It also includes a user data collection function that prompts the user for five names and ages, calculates their average age, and prints whether they are old or young based on the average.
+
+VERDICT
+
+-------
+
+Decision    : APPROVE
+
+Risk Level  : LOW
+
+Tests       : ADEQUATE
+
+
+
+------------------------------------------------------------
+
+[CRITICAL] ISSUES  (must fix before merge)
+
+------------------------------------------------------------
+
+None.
+
+
+
+------------------------------------------------------------
+
+[MAJOR] ISSUES  (strongly recommended)
+
+------------------------------------------------------------
+
+None.
+
+
+
+------------------------------------------------------------
+
+[MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+- Line 25: Unused import statement (`unused = math.pi`). This can be removed to improve code quality.
+
+    >> calc.py:25
+
+        Code    : unused = math.pi
+
+        Problem : Unused import statement
+
+        Fix     : Remove the line `unused = math.pi`
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
+
+------------------------------------------------------------
+
+None.
+
+
+
+------------------------------------------------------------
+
+WHAT'S DONE WELL
+
+------------------------------------------------------------
+
+- The code is well-documented with docstrings and comments.
+- The function `getUserData` collects user input and stores it in a list of dictionaries.
+
+------------------------------------------------------------
+
+REVIEWER NOTES
+
+------------------------------------------------------------
+
+No broader architectural concerns or patterns are noticed. The reviewer assumes that the intention was to create a simple calculator and data collection tool, and that these functions are appropriate for their intended use cases.
+
+============================================================
+
+END OF REVIEW
+
+============================================================
+
+========== QUALITY ==========
+
+============================================================
+
+PULL REQUEST REVIEW
+
+============================================================
+
+
+
+SUMMARY
+
+-------
+
+This PR introduces a simple calculator function `calc` and a user data processing function `process`. It reads user input for names and ages, calculates the average age, and prints users categorized as "old" or "young". The code includes basic error handling for invalid operations.
+
+VERDICT
+
+-------
+
+Decision    : APPROVE
+
+Risk Level  : LOW
+
+Tests       : NO TESTS FOUND
+
+
+
+------------------------------------------------------------
+
+[CRITICAL] ISSUES  (must fix before merge)
+
+------------------------------------------------------------
+
+There are no critical issues in this PR.
+
+
+
+------------------------------------------------------------
+
+[MAJOR] ISSUES  (strongly recommended)
+
+------------------------------------------------------------
+
+- Missing input validation for user ages.
+- Inadequate test coverage for the `process` function.
+
+------------------------------------------------------------
+
+[MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+None identified in this PR.
+
+
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
+
+------------------------------------------------------------
+
+None identified in this PR.
+
+
+
+------------------------------------------------------------
+
+WHAT'S DONE WELL
+
+------------------------------------------------------------
+
+The code is simple, readable, and follows good practices. The `calc` function handles basic arithmetic operations and the `process` function calculates user averages effectively.
+
+------------------------------------------------------------
+
+REVIEWER NOTES
+
+------------------------------------------------------------
+
+None applicable.
+
+========== PERFORMANCE ==========
+
+============================================================
+
+PULL REQUEST REVIEW
+
+============================================================
+
+
+
+SUMMARY
+
+-------
+
+This PR introduces a simple calculator function `calc` and processes user data to calculate the average age of users. The code handles different operations for addition, subtraction, multiplication, and division.
+
+VERDICT
+
+-------
+
+Decision    : APPROVE
+
+Risk Level  : LOW
+
+Tests       : ADEQUATE
+
+
+
+------------------------------------------------------------
+
+[CRITICAL] ISSUES  (must fix before merge)
+
+------------------------------------------------------------
+
+None.
+
+
+
+------------------------------------------------------------
+
+[MAJOR] ISSUES  (strongly recommended)
+
+------------------------------------------------------------
+
+None.
+
+------------------------------------------------------------
+
+[MINOR] ISSUES  (should fix)
+
+------------------------------------------------------------
+
+None.
+
+------------------------------------------------------------
+
+[SUGGESTIONS]  (optional improvements)
+
+------------------------------------------------------------
+
+None.
+
+
+
+------------------------------------------------------------
+
+WHAT'S DONE WELL
+
+------------------------------------------------------------
+
+- The code is straightforward and easy to understand.
+- The function `calc` handles basic arithmetic operations correctly.
+
+------------------------------------------------------------
+
+REVIEWER NOTES
+
+------------------------------------------------------------
+
+None.
