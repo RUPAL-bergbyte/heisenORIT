@@ -1,3 +1,6 @@
 ollama
 python-dotenv
 httpx
+PyGithub
+langgraph
+langchain-core

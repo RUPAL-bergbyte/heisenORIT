@@ -1,173 +1,94 @@
-import os
-import ollama
+"""
+github_fetch.py
 
+Reusable GitHub PR fetching, built on PyGithub — same auth pattern you
+already had working in your repo-scanner version of this file and in
+pr_review.py (dotenv + Auth.Token).
+
+This replaces the ad-hoc inline PyGithub calls that used to live directly
+inside pr_review.py with one importable function, so pr_review.py, tests,
+and the orchestrator can all reuse it.
+"""
+
+import os
 from github import Github, Auth
 from dotenv import load_dotenv
 
-
-# ---------- PROMPTS ----------
-
-SECURITY_PROMPT = """
-Review only security issues.
-Focus on:
-- secrets
-- SQL injection
-- auth
-- unsafe execution
-"""
-
-QUALITY_PROMPT = """
-Review only code quality.
-Focus on:
-- maintainability
-- duplication
-- readability
-"""
-
-PERFORMANCE_PROMPT = """
-Review only performance.
-Focus on:
-- memory
-- loops
-- expensive operations
-"""
-
-
-# ---------- GITHUB ----------
-
 load_dotenv()
 
-token = os.getenv("GITHUB_TOKEN")
 
-if not token:
-    print("Token not found")
-    exit()
-
-auth = Auth.Token(token)
-
-g = Github(auth=auth)
-
-
-repo_name = input(
-    "Enter repo (username/repo): "
-)
-
-repo = g.get_repo(repo_name)
-
-
-review_folder = "github-review-output"
-
-if not os.path.exists(review_folder):
-    os.makedirs(review_folder)
-
-
-agents = {
-    "security": SECURITY_PROMPT,
-    "quality": QUALITY_PROMPT,
-    "performance": PERFORMANCE_PROMPT
-}
-
-
-print("\nRepository review started...\n")
-
-
-contents = repo.get_contents("")
-
-
-while contents:
-
-    item = contents.pop(0)
-
-    if item.type == "dir":
-
-        contents.extend(
-            repo.get_contents(item.path)
+def _get_github_client() -> Github:
+    token = os.getenv("GITHUB_TOKEN")
+    if not token:
+        raise RuntimeError(
+            "GITHUB_TOKEN not found. Add it to your .env file, e.g.\n"
+            "GITHUB_TOKEN=ghp_xxxxxxxxxxxx"
         )
-
-        continue
-
-
-    # REVIEW ONLY CODE FILES
-    if not (
-        item.path.endswith(".py")
-        or item.path.endswith(".js")
-        or item.path.endswith(".cpp")
-        or item.path.endswith(".java")
-    ):
-        continue
+    auth = Auth.Token(token)
+    return Github(auth=auth)
 
 
-    try:
+def get_pr_files(repo_name: str, pr_number: int) -> list[dict]:
+    """
+    Fetches the changed files for a PR and returns them as plain dicts
+    (rather than PyGithub File objects) so file_filter.py and the
+    orchestrator don't need to know about PyGithub at all.
 
-        decoded = (
-            item.decoded_content
-            .decode("utf-8")
-        )
+    repo_name: "owner/repo", e.g. "RUPAL-bergbyte/heisenORIT"
+    pr_number: PR number, e.g. 2
 
-    except:
+    Each dict looks like:
+        {
+            "filename": "ai-pr-reviewer/githubproject.py",
+            "status": "modified",
+            "additions": 12,
+            "deletions": 3,
+            "changes": 15,
+            "patch": "@@ -1,4 +1,6 @@ ...",
+        }
+    """
+    g = _get_github_client()
 
-        continue
+    print(f"Trying repo: {repo_name}")
+    repo = g.get_repo(repo_name.strip())
+    print(f"Repo found: {repo.full_name}")
 
+    print(f"Trying PR: {pr_number}")
+    pr = repo.get_pull(pr_number)
+    print(f"PR found: {pr.title}")
 
-    print(
-        f"\nReviewing {item.path}"
-    )
+    files = []
+    for f in pr.get_files():
+        files.append({
+            "filename": f.filename,
+            "status": f.status,
+            "additions": f.additions,
+            "deletions": f.deletions,
+            "changes": f.changes,
+            # f.patch can be None for binary files or files GitHub
+            # doesn't generate a text diff for.
+            "patch": f.patch or "",
+        })
 
-    review_text = ""
-
-
-    for agent_name, prompt in agents.items():
-
-        print(
-            f"Running {agent_name}"
-        )
-
-        response = ollama.chat(
-            model="qwen2.5-coder:3b",
-            messages=[
-                {
-                    "role": "system",
-                    "content": prompt
-                },
-                {
-                    "role": "user",
-                    "content": decoded
-                }
-            ]
-        )
-
-        review_text += (
-            f"\n\n========== "
-            f"{agent_name.upper()} "
-            f"==========\n\n"
-        )
-
-        review_text += (
-            response["message"]["content"]
-        )
+    return files
 
 
-    safe_name = (
-        item.path
-        .replace("/", "_")
-    )
+def get_pr(repo_name: str, pr_number: int):
+    """
+    Returns the raw PyGithub PullRequest object, for cases (like posting
+    a review comment) where you need the live object rather than a dict.
+    """
+    g = _get_github_client()
+    repo = g.get_repo(repo_name.strip())
+    return repo.get_pull(pr_number)
 
 
-    output_file = os.path.join(
-        review_folder,
-        f"{safe_name}_review.txt"
-    )
+if __name__ == "__main__":
+    # Interactive smoke test, same UX as your original scripts.
+    repo_name = input("Repo (owner/repo): ")
+    pr_number = int(input("PR Number: "))
 
-
-    with open(
-        output_file,
-        "w",
-        encoding="utf-8"
-    ) as f:
-
-        f.write(review_text)
-
-
-    print(
-        f"Saved → {output_file}"
-    )
+    files = get_pr_files(repo_name, pr_number)
+    print(f"\nChanged files ({len(files)}):")
+    for f in files:
+        print(f"  - {f['filename']} ({f['status']}, +{f['additions']}/-{f['deletions']})")
