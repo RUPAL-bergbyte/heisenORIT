@@ -161,7 +161,3 @@ Address the hardcoded credentials and SQL injection risk before merge.
 - [ ] Multi-turn debate between agents before the final merge (not just one-shot)
 - [ ] GitHub Action / webhook trigger so reviews run automatically on PR open
 - [ ] Configurable severity thresholds for auto-approve vs. request-changes
-
-## License
-
-MIT (or update to match your project's actual license).
